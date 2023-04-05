@@ -88,7 +88,7 @@ var transactionsOverview = new Vue({
         .then(function (response) {
           vm.items = response.data
           vm.account = response.data[0].toAccount
-          vm.balance = response.data[0].balanceAfter
+          vm.balance = response.data[0].balanceAfter.toLocaleString('en-US')
         })
         .catch(function (error) {
           console.log('Error! Could not reach the API. ' + error)
@@ -111,8 +111,6 @@ var transactionsOverview = new Vue({
           vm.pieOptions.series = response.data.series
           vm.pieOptions.labels = response.data.labels
 
-          console.log('pieooptons', vm.pieOptions)
-
           vm.pieChart.destroy()
           vm.pieChart = new ApexCharts(document.querySelector("#chart"), vm.pieOptions);
           vm.pieChart.render()
@@ -123,26 +121,25 @@ var transactionsOverview = new Vue({
         })
     },
     connect: function () {
+      
       var vm = this
-      var stompConfigUrl = '/api/config/stomp'
+      var stompConfigUrl = '/api/config/ws'
       axios.get(stompConfigUrl)
         .then(function (response) {
-          var stompconfig = response.data
-          var url = stompconfig.protocol + '://' + stompconfig.host + ':' + stompconfig.port + stompconfig.endpoint
-          this.stompClient = Stomp.client(url)
 
-          this.stompClient.connect(
-            {},
-            frame => {
-              this.connected = true
-              this.stompClient.subscribe(stompconfig.transactionsTopic, tick => {
-                var transaction = JSON.parse(tick.body)
-                var transactionObject = JSON.parse(transaction.transaction)
-                vm.items.unshift(transactionObject)
-                vm.account = transactionObject.toAccount
-                vm.balance = transactionObject.balanceAfter
+          var wsConfig = response.data
+          var url = `${wsConfig.protocol}://${wsConfig.host}:${wsConfig.port}${wsConfig.endpoint}`
 
-                axios.get("/transaction/balance")
+          var ws= new WebSocket(url)
+          ws.onopen = event => {
+            ws.onmessage =  event => {
+              let transactionObject = JSON.parse(event.data)
+              vm.items.unshift(transactionObject)
+              vm.items.pop()
+              vm.account = transactionObject.toAccount
+              vm.balance = transactionObject.balanceAfter.toLocaleString("en-US")
+
+              axios.get("/transaction/balance")
                   .then(function (response) {
                     vm.areaChart.updateSeries([{
                       name: 'value',
@@ -152,14 +149,11 @@ var transactionsOverview = new Vue({
                   .catch(function (error) {
                     console.log('Error! Could not reach the API. ' + error)
                   })
-
-                  axios.get("/transaction/biggestspenders")
+              axios.get("/transaction/biggestspenders")
                   .then(function (response) {
                 
                     vm.pieOptions.series = response.data.series
                     vm.pieOptions.labels = response.data.labels
-                
-                    console.log('pieooptons', vm.pieOptions)
                 
                     vm.pieChart.destroy()
                     vm.pieChart = new ApexCharts(document.querySelector("#chart"), vm.pieOptions);                
@@ -169,19 +163,11 @@ var transactionsOverview = new Vue({
                   .catch(function (error) {
                     console.log('Error! Could not reach the API. ' + error)
                   })
-                
-              })
-            },
-            error => {
-              console.log("Error connecting via stomp", error)
-              this.connected = false
-            })
+            }
+          }
+        })
 
-        })
-        .catch(function (error) {
-          console.log('Error fetching stomp config.' + error)
-        })
-    },
+      },
     getAnswer: function () {
 
       var searchTerm = this.question
@@ -189,7 +175,7 @@ var transactionsOverview = new Vue({
         searchTerm = searchTerm + '*'
       }
 
-      var searchUrl = '/api/search?term=' + searchTerm
+      var searchUrl = '/transaction/search?term=' + searchTerm
       var vm = this
       axios.get(searchUrl)
         .then(function (response) {

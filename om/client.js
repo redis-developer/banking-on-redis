@@ -11,6 +11,9 @@ export const redis = createClient({
   password: config.redisPassword
 })
 
+export const redis2 = redis.duplicate()
+
 redis.on('error', error => console.log('Redis Client Error', error))
 
 await redis.connect()
+await redis2.connect()

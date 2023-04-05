@@ -49,7 +49,7 @@ export const source = [
         "type": "Contactless payment"
     },
     {
-        "fromAccountName": "H&M",
+        "fromAccountName": "H & M",
         "description": "Clothing",
         "type": "Contactless payment"
     },
