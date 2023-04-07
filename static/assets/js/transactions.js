@@ -86,7 +86,11 @@ var transactionsOverview = new Vue({
       var vm = this
       axios.get(transactionsUrl)
         .then(function (response) {
-          vm.items = response.data
+
+          vm.items = response.data.map(item => {
+            item.amount = item.amount.toFixed(2)
+            return item
+          })
           vm.account = response.data[0].toAccount
           vm.balance = response.data[0].balanceAfter.toLocaleString('en-US')
         })
@@ -172,7 +176,7 @@ var transactionsOverview = new Vue({
 
       var searchTerm = this.question
       if (this.question.length > 0) {
-        searchTerm = searchTerm + '*'
+        searchTerm = searchTerm.trim() + '*'
       }
 
       var searchUrl = '/transaction/search?term=' + searchTerm

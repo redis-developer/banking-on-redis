@@ -14,7 +14,7 @@ let balance = 100000.00;
 transactionRouter.get('/balance', async (req, res) => {
   const balance = await redis.ts.range(
     BALANCE_TS,
-    Date.now() - (1000 * 60 * 60),
+    Date.now() - (1000 * 60 * 5),
     Date.now())
 
   let balancePayload = balance.map((entry) => {
@@ -53,10 +53,9 @@ transactionRouter.get('/search', async (req, res) => {
     results = await bankRepo.search()
       .where('description').matches(term)
       .or('fromAccountName').matches(term)
-      .or('transactionType').matches(term)
-      .return.all()
+      .or('transactionType').equals(term)
+      .return.all({ pageSize: 1000})
   }
-    
   res.send(results)
 })
 
@@ -64,6 +63,6 @@ transactionRouter.get('/search', async (req, res) => {
 transactionRouter.get('/transactions', async (req, res) => {
   const transactions = await bankRepo.search()
     .sortBy('transactionDate', 'DESC')
-    .return.all()
+    .return.all({ pageSize: 1000})
   res.send(transactions.slice(0, 10))
 })

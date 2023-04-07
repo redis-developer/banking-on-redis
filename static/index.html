@@ -151,7 +151,7 @@
                                             <td><span v-html="searchitem.fromAccountName"></span></td>
                                             <td>{{ searchitem.fromAccount }}</td>
                                             <td><span v-html="searchitem.description"></span></td>
-                                            <td>{{ searchitem.amount }}</td>
+                                            <td>{{'$' + searchitem.amount}}</td>
                                             <td><span v-html="searchitem.transactionType"></span></td>
                                         </tr>
                                     </tbody>
@@ -189,7 +189,7 @@
                                         <td>{{ item.fromAccountName }}</td>
                                         <td>{{ item.fromAccount }}</td>
                                         <td>{{ item.description }}</td>
-                                        <td>{{ item.amount }}</td>
+                                        <td>{{ '$' + item.amount }}</td>
                                         <td>{{ item.transactionType }}</td>
                                     </tr>
                                 </tbody>

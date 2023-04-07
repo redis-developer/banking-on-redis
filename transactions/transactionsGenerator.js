@@ -1,24 +1,26 @@
 import { redis } from '../om/client.js'
 import { bankTransactionRepository } from '../om/bankTransaction-repository.js'
 import * as source from './transaction_sources.js'
-import { formatDate, createAmount, getRandom } from './utilities.js'
+import { createAmount, getRandom, replacer } from './utilities.js'
 
-const TRANSACTION_RATE_MS = 10000
 const TRANSACTIONS_STREAM = "transactions"
 const BALANCE_TS = 'balance_ts';
 const SORTED_SET_KEY = 'bigspenders';
 let balance = 100000.00;
 
 const streamBankTransaction = async (transaction) => {
-  // TODO: sockets read from stream?
-  const transactionString = JSON.stringify(transaction)
-  const streamResult = await redis.XADD(
-    TRANSACTIONS_STREAM,
-    '*', {
-      'transaction': transactionString
+  /* convert all numbers to strings */
+  const preparedTransaction = JSON.parse(JSON.stringify(transaction, replacer))
+  
+  await redis.XADD( TRANSACTIONS_STREAM, '*',
+  preparedTransaction,
+  {
+    TRIM: {
+      strategy: 'MAXLEN', // Trim by length.
+      strategyModifier: '~', // Approximate trimming.
+      threshold: 100 // Retain around 1000 entries.
     }
-  )
-  // todo: node-redis duplicate for xread
+  })
 }
 
 const createTransactionAmount = (vendor, random) => {
@@ -27,7 +29,7 @@ const createTransactionAmount = (vendor, random) => {
   balance += amount
   balance = parseFloat(balance.toFixed(2))
 
-  redis.ts.add(BALANCE_TS, '*', balance)
+  redis.ts.add(BALANCE_TS, '*', balance, {'DUPLICATE_POLICY':'first' })
   redis.zIncrBy(SORTED_SET_KEY, (amount * -1), vendor)
 
   return amount
@@ -41,13 +43,13 @@ export const createBankTransaction = async (userName) => {
   const amount = createTransactionAmount(vendor.fromAccountName, random)
   const transaction = {
     id: random * random,
-    fromAccount: Math.floor((random / 2) * 3),
+    fromAccount: Math.floor((random / 2) * 3).toString(),
     fromAccountName: vendor.fromAccountName,
-    toAccount: 1580783161, // arbitrary account ID for bob
+    toAccount: '1580783161', // arbitrary account ID for bob
     toAccountName: userName,
-    amount: `${amount} $`,
+    amount: amount,
     description: vendor.description,
-    transactionDate: formatDate(new Date()),
+    transactionDate: new Date(),
     transactionType: vendor.type,
     balanceAfter: balance
   }
@@ -58,17 +60,7 @@ export const createBankTransaction = async (userName) => {
   return bankTransaction
 }
 
-const createInitialStream = (userName) => {
-  redis.delete(TRANSACTIONS_STREAM);
-  for (let i = 0; i < 10; i++) {
-    createBankTransaction(userName)
-  }
-}
 
-const deleteSortedSet = () => {
-  redis.delete(SORTED_SET_KEY);
-  console.info(`Deleted ${SORTED_SET_KEY} sorted set`);
-}
 
 export const getBalanceTS = async () => {
   const balanceTS = await redis.ts.range(
