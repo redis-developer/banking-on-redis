@@ -1,0 +1,20 @@
+services:
+  redis: 
+    image: redis/redis-stack:latest
+    ports:
+      - '6379:6379'
+      - '8001:8001'
+    restart: always
+
+  banking-on-redis:
+      build: banking-on-redis
+      ports:
+        - "8080:8080"
+        - "80:80"
+      restart: always
+      environment:
+        - REDIS_HOST
+        - REDIS_PORT
+        - REDIS_PASSWORD
+      depends_on:
+        - redis        
