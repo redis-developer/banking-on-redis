@@ -6,9 +6,7 @@ export const createAmount = () => {
 }
 
 export const getRandom = () => {
-    const array = new Uint32Array(1)
-    crypto.getRandomValues(array)
-    return array[0]
+    return Math.floor(Math.random() * 9999999999) 
 }
 
 export const replacer = (key, value) => {

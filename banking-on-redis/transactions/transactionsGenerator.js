@@ -6,21 +6,18 @@ import { createAmount, getRandom, replacer } from './utilities.js'
 const TRANSACTIONS_STREAM = "transactions"
 const BALANCE_TS = 'balance_ts';
 const SORTED_SET_KEY = 'bigspenders';
+const TRIM = {
+  strategy: 'MAXLEN', // Trim by length.
+  strategyModifier: '~', // Approximate trimming.
+  threshold: 100 // Retain around 100 entries.
+}
 let balance = 100000.00;
 
 const streamBankTransaction = async (transaction) => {
   /* convert all numbers to strings */
   const preparedTransaction = JSON.parse(JSON.stringify(transaction, replacer))
   
-  await redis.XADD( TRANSACTIONS_STREAM, '*',
-  preparedTransaction,
-  {
-    TRIM: {
-      strategy: 'MAXLEN', // Trim by length.
-      strategyModifier: '~', // Approximate trimming.
-      threshold: 100 // Retain around 1000 entries.
-    }
-  })
+  await redis.XADD( TRANSACTIONS_STREAM, '*', preparedTransaction, { TRIM })
 }
 
 const createTransactionAmount = (vendor, random) => {

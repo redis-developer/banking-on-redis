@@ -1,7 +1,7 @@
 import { createClient } from 'redis'
 
 import { config } from '../config.js'
-console.log(config)
+
 export const redis = createClient({
   socket: {
     host: config.redisHost,
