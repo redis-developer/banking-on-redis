@@ -50,7 +50,7 @@ export const createBankTransaction = async (userName) => {
     transactionType: vendor.type,
     balanceAfter: balance
   }
-
+  
   const bankTransaction = await bankTransactionRepository.save(transaction)
   streamBankTransaction(bankTransaction)
   console.log('Created bankTransaction')

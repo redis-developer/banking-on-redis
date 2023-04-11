@@ -3,6 +3,7 @@ import * as cron from 'node-cron'
 
 import express from 'express'
 import serveStatic from 'serve-static'
+import bodyParser from 'body-parser'
 
 import session from 'express-session'
 import { RedisStackStore } from 'connect-redis-stack'
@@ -22,6 +23,7 @@ const store = new RedisStackStore({
 
 const app = express();
 
+app.use(bodyParser.urlencoded({extended:true}));
 app.use(express.json())
 app.use(session({
   store: store,
@@ -62,7 +64,7 @@ cron.schedule('*/10 * * * * *', async () => {
   currentId = id
 });
 
-app.use(serveStatic('static', { index: ['index.html'] }))
+app.use(serveStatic('static', { index: ['auth-login.html'] }))
 
 /* bring in some routers */
 app.use('/account', accountRouter)
@@ -72,5 +74,20 @@ app.use('/transaction', transactionRouter)
 app.get('/api/config/ws', (req, res) => {
   res.json({"protocol":"ws","host":"localhost", "port": "80", "endpoint":"/websocket"})
 })
+
+app.post('/perform_login', (req, res) => {
+  let session = req.session
+  console.log(session)
+  if(req.body.username = config.redisUsername &&
+    req.body.password == config.redisPassword) {
+      session=req.session;
+      session.userid=req.body.username;
+      console.log(req.session )
+      res.redirect('/index.html')
+  } else {
+    res.redirect('/auth-login.html')
+  }
+})
+
 /* start the server */
 app.listen(config.expressPort, () => console.log("Listening on port", config.expressPort))

@@ -127,8 +127,8 @@ var transactionsOverview = new Vue({
     connect: function () {
       
       var vm = this
-      var stompConfigUrl = '/api/config/ws'
-      axios.get(stompConfigUrl)
+      var wsConfigUrl = '/api/config/ws'
+      axios.get(wsConfigUrl)
         .then(function (response) {
 
           var wsConfig = response.data
