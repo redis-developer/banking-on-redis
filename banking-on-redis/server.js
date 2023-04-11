@@ -78,7 +78,7 @@ app.get('/api/config/ws', (req, res) => {
 app.post('/perform_login', (req, res) => {
   let session = req.session
   console.log(session)
-  if(req.body.username = config.redisUsername &&
+  if(req.body.username == config.redisUsername &&
     req.body.password == config.redisPassword) {
       session=req.session;
       session.userid=req.body.username;

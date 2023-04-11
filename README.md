@@ -34,6 +34,9 @@ The transaction generator creates a randomized banking debit or credit which wil
 
  The transaction is saved as a JSON document within Redis. The `balanceAfter` value is recorded in a Timeseries with the key `balance_ts`. The transaction is also added to a stream (`transactions`) as an entry. The sorted set `bigspenders` is also updated - the associated **`fromAccountName`** member within the sorted set is incremented by the transaction amount. Note that this amount can be positive or negative.
 
+## Session Storage
+Session storage is also handled through Redis with the package [Connect Redis Stack](https://www.npmjs.com/package/connect-redis-stack). Once logged in, a session JSON object is stored with a TTL (time to live) set to 3600 seconds, or one hour.
+
 ## Transactions API
 Banking on Redis provides an API for the timeseries chart to track the bank account's balance, a pie chart of the top five biggest spenders, a search endpoint to return specific transactins, and a list of the most recent transactions. A websocket connection provides the most recent transaction, balance, and biggest spenders values every ten seconds. 
 
