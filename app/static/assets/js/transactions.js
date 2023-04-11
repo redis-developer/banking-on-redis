@@ -139,7 +139,11 @@ var transactionsOverview = new Vue({
             ws.onmessage =  event => {
               let transactionObject = JSON.parse(event.data)
               vm.items.unshift(transactionObject)
-              vm.items.pop()
+
+              if(vm.items.length > 10){
+                vm.items.pop()
+              }
+
               vm.account = transactionObject.toAccount
               vm.balance = transactionObject.balanceAfter.toLocaleString("en-US")
 

@@ -1,15 +1,9 @@
 import { createClient } from 'redis'
 
 import { config } from '../config.js'
-
-export const redis = createClient({
-  socket: {
-    host: config.redisHost,
-    port: config.redisPort
-  },
-  username: config.redisUsername,
-  password: config.redisPassword
-})
+const url = `redis://${config.redisHost}:${config.redisPort}`
+console.log(url)
+export const redis = createClient({ url })
 
 export const redis2 = redis.duplicate()
 

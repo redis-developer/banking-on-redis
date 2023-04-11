@@ -6,15 +6,14 @@ services:
       - '8001:8001'
     restart: always
 
-  banking-on-redis:
-      build: banking-on-redis
+  app:
+      build: ./app
+      command: npm run dev:watch
+      volumes:
+      - ./app:/usr/src/app
       ports:
-        - "8080:8080"
-        - "80:80"
+        - '8080:8080'
+        - '80:80'
       restart: always
-      environment:
-        - REDIS_HOST
-        - REDIS_PORT
-        - REDIS_PASSWORD
       depends_on:
         - redis        

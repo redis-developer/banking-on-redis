@@ -42,7 +42,7 @@ export const createBankTransaction = async (userName) => {
     id: random * random,
     fromAccount: Math.floor((random / 2) * 3).toString(),
     fromAccountName: vendor.fromAccountName,
-    toAccount: '1580783161', // arbitrary account ID for bob
+    toAccount: '1580783161',
     toAccountName: userName,
     amount: amount,
     description: vendor.description,
@@ -53,7 +53,7 @@ export const createBankTransaction = async (userName) => {
   
   const bankTransaction = await bankTransactionRepository.save(transaction)
   streamBankTransaction(bankTransaction)
-  console.log('Created bankTransaction')
+  console.log('Created bankTransaction!')
   return bankTransaction
 }
 

@@ -1,4 +1,4 @@
-import 'dotenv/config'
+import 'dotenv/config.js'
 import * as cron from 'node-cron'
 
 import express from 'express'
@@ -78,11 +78,10 @@ app.get('/api/config/ws', (req, res) => {
 app.post('/perform_login', (req, res) => {
   let session = req.session
   console.log(session)
-  if(req.body.username == config.redisUsername &&
-    req.body.password == config.redisPassword) {
+  if(req.body.username == 'bob' &&
+    req.body.password == 'foobared') {
       session=req.session;
       session.userid=req.body.username;
-      console.log(req.session )
       res.redirect('/index.html')
   } else {
     res.redirect('/auth-login.html')
