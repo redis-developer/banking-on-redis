@@ -17,7 +17,7 @@ Features in this demo:
 ## Transaction Generator
 The transaction generator creates a randomized banking debit or credit which will reflect on a starting user balance of $100,000.00. Here is a sample transaction:
 
-```json
+```javascript
 {
   id: 11280657975513370000,
   fromAccount: '5038003617',
