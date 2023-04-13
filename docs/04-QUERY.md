@@ -2,7 +2,7 @@
 
 [RediSearch](https://redis.io/docs/stack/search/) is a module that adds indexing and full-text search to Redis. You can use it to make your Hashes and JSON documents fully searchable. RediSearch is a *really* big topic and would probably be suitable as a workshop all its own. We're just going to cover the basics here so that we can finish up our Bigfoot Tracker API. If you'd like to know more, check out the [full search query syntax](https://redis.io/docs/stack/search/reference/query_syntax/) to see what you can do.
 
-In the next few sections, we'll be using the [FT.CREATE](https://redis.io/commands/ft.create/) to create an index, [FT.SEARCH](https://redis.io/commands/ft.search/) to search, and [FT.DROPINDEX](https://redis.io/commands/ft.dropindex/) to delete an index. We'll also use [FT.INFO](https://redis.io/commands/ft.info/) to get information about our index and [FT._LIST](https://redis.io/commands/ft._list/) to get a list of existing indices.
+In this section, we'll be using [FT.CREATE](https://redis.io/commands/ft.create/) to create an index, [FT.SEARCH](https://redis.io/commands/ft.search/) to search, and [FT.DROPINDEX](https://redis.io/commands/ft.dropindex/) to delete an index. We'll also use [FT.INFO](https://redis.io/commands/ft.info/) to get information about our index and [FT._LIST](https://redis.io/commands/ft._list/) to get a list of existing indices.
 
 ## Loading Some Data ##
 
@@ -258,20 +258,6 @@ The `2` in the above command is similar to the number in the `PREFIX` option of 
 
 When you do this, you just get the key names back.
 
-----------------------------------------
-
-That's the basics of the basics. Now, let's see [how to search on common field types](17-REDISEARCH-TEXT-AND-TAG.md).
-
-
-
-
-
-
-
-# Searching TEXT and TAG Fields ##
-
-TEXT and TAG fields together allow you to perform most of the types of searches against strings that you'd want to do. TEXT fields provide full-text search so you can find words within blocks of texts. Tags act as keys or collections of keys that match on an entire value.
-
 ## Searching TEXT Fields ##
 
 A TEXT field in Redis search indicates a field that contains human-readable text that we want to perform full-text search against. TEXT fields understand related words using a process called *stemming*. So RediSearch knows that a search for `give` should match text with `gives`, `gave`, `given`, and `giving`. TEXT fields also know that certain words—called *stopwords*—are common and not useful for search. Thus, words like `a`, `and`, and `the` are ignored when searching TEXT fields.
@@ -443,17 +429,6 @@ Let's find all the Bigfoot sightings in Ohio that are Class A:
 ```
 
 Note that TAG fields that contain stopwords result in invalid queries. Escaping the string here keeps the parser from seeing the `A` in `Class A` as a stopword.
-
-----------------------------------------
-
-Now that we have searched TEXT and TAG fields, let's [search on NUMERIC and GEO](18-REDISEARCH-NUMERIC-AND-GEO.md) fields.
-
-
-
-
-# Searching NUMERIC and GEO Fields ##
-
-NUMERIC and GEO fields don't have a ton in common, other than they are both simpler than TEXT and TAG searches. So, I've lumped 'em together.
 
 ## Searching NUMERIC Fields ##
 
@@ -696,11 +671,3 @@ Valid units of measure are `m`, `km`, `mi`, and `ft`. I like the freedom units b
 ```
 
 And that's GEO.
-
-----------------------------------------
-
-Search covered, let's see about making our Bigfoot Tracking API take advantage of [RediSearch from Node Redis](19-NODE-REDIS-SEARCH.md) to get rid of that call to `.keys()` and to complete our API!
-
-
-
-
