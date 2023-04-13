@@ -1,5 +1,6 @@
-## Installation Instructions
+# Installation Instructions #
 
+Gotta get some Redis and get the code before we can do anything, right? So let's do that:
 
 1. Clone the repo:
 ```bash
@@ -11,34 +12,46 @@ git clone https://github.com/redis-developer/banking-on-redis.git
 cd banking-on-redis
 ```
 
-### Running locally with Docker (recommended)
+Once installed you have some options on how you want to run this. We recommend using Docker but if you don't have Docker or don't like it for some reason, I've included some instuctions on how to do it without Docker.
 
-This application can be run locally with Docker. A redis instance and the Node.js server will run concurrently. `nodemon` is being run for local development.  
 
-1. Start the docker image:
+## Running Locally With Docker (i.e. Easy Mode) ##
+
+This application can be run locally with Docker. A Redis instance and the Node.js server will run concurrently. Note, if you have an instance of Redis running already *and* it's running on port `6379`, you might want to stop it first or this will fail.
+
+To start up Redis and the sample application, just start the Docker image in the traditional way:
+
 ```bash
 docker-compose up --build
 ```
 
-Use Redis-insight by opening a browser window to [localhost:8001](localhost:8001)
+Redis is now listening on port `6379`. You're code will talk to Redis on this port. Nothing for you to do here.
 
-The main page can be accessed at [localhost:8080](localhost:8080)
+RedisInsight is listening on port `8001`. To use it, open a browser and point it at [localhost:8001](http://localhost:8001).
 
-You are able to make changes to the code base while the docker instances is running - the server will automatically relaod.
+And, the application itself is listening on port `8080`. Use a browser to access this to at [localhost:8080](http://localhost:8080).
 
-### Running locally without Docker
+The Node.js server—that thing that is listening on port `8080` is using `nodemon`. So, can make changes to the code while all thisa glorious stuff in running and the server will automatically reload.
 
-This method will have you downloading and installing a version of Redis on your machine.  You will start up Redis then start the Banking-On-Redis application.
 
-[Options for installing Redis](https://redis.io/docs/stack/get-started/install/mac-os/) - make sure Redis Stack Server is installed
+## Running Locally Without Docker (i.e. Hard Mode) ##
 
-Ensure that Redis is running locally.
+This method has you downloading and installing a version of Redis on your machine. You'll start up Redis then start up the _Banking on Redis_ application.
 
-From a command line, send your Redis Server a `PING` to get a response of liveliness:
+There are a [few options](https://redis.io/docs/stack/get-started/install/) for installing Redis Stack locally. Pick one that makes sense for you and follow the instructions. We can help if you get stuck.
+
+Depending on how you install Redis Stack, you might also need to install RedisInsight. [Instuctions](https://redis.com/redisinsight/) for that are online as well. Again, we can help if you get stuck.
+
+
+## Confirming the Installation ##
+
+Once you've got it all installed, let's do a quick test to ensure that Redis is running locally. Go to RedisInsight, select the workbench option or the CLI option and send a `PING` command. You should get a `PONG` back.
+
+Like this:
 
 ```bash
-redis-cli PING
-> PONG
+127.0.0.1:6379> PING
+PONG
 ```
 
-If you have any difficulties please see an instructor.
+And, as always, if you have any questions or need help, we're here to serve.
