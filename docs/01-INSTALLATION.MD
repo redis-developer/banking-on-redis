@@ -40,7 +40,18 @@ This method has you downloading and installing a version of Redis on your machin
 
 There are a [few options](https://redis.io/docs/stack/get-started/install/) for installing Redis Stack locally. Pick one that makes sense for you and follow the instructions. We can help if you get stuck.
 
-Depending on how you install Redis Stack, you might also need to install RedisInsight. [Instuctions](https://redis.com/redisinsight/) for that are online as well. Again, we can help if you get stuck.
+Depending on how you install Redis Stack, you might also need to install RedisInsight. [Instuctions for that](https://redis.com/redisinsight/) are online as well. Again, we can help if you get stuck.
+
+To get the app running, you'll need to have a recent version of Node.js installed. We'll assume you are download and install that. Hopefully you've got it already!
+
+To start the application, do the following:
+
+```bash
+cd app
+npm run dev:watch
+```
+
+You can do this later if you'd prefer.
 
 
 ## Confirming the Installation ##
