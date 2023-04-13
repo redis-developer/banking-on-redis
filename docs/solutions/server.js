@@ -47,18 +47,19 @@ const streamKey = 'transactions'
 let currentId = '$'
 
 cron.schedule('*/10 * * * * *', async () => {
-
-  createBankTransaction()
-
-  /*
-    REDIS CHALLENGE 3
-    Read from the stream of transactions
-  */
-
+  const userName = process.env.REDIS_USERNAME
   
-  const result = [ { name: 'transactions', messages: [ {} ] } ]
-  const event = result[0].messages[0]
+  // TODO: should we place this in the transactionGenerator file with its own cron job and have the xread in a while loop here?
+  createBankTransaction(userName)
+  const result = await redis2.xRead({ key: streamKey, id: currentId }, { COUNT: 1, BLOCK: 10000 });
+  
+  // pull the values for the event out of the result
+  const [ { messages } ] = result
+  const [ { id, message } ] = messages
+  const event = { ...message }
+
   sockets.forEach(socket => socket.send(JSON.stringify(event)))
+  
   // update the current id so we get the next event next time
   currentId = id
 });
