@@ -1,5 +1,7 @@
 # Using RediSearch #
 
+Note the preloaded data.
+
 [RediSearch](https://redis.io/docs/stack/search/) is a module that adds indexing and full-text search to Redis. You can use it to make your Hashes and JSON documents fully searchable. RediSearch is a *really* big topic and would probably be suitable as a workshop all its own. We're just going to cover the basics here so that we can finish up our Bigfoot Tracker API. If you'd like to know more, check out the [full search query syntax](https://redis.io/docs/stack/search/reference/query_syntax/) to see what you can do.
 
 In this section, we'll be using [FT.CREATE](https://redis.io/commands/ft.create/) to create an index, [FT.SEARCH](https://redis.io/commands/ft.search/) to search, and [FT.DROPINDEX](https://redis.io/commands/ft.dropindex/) to delete an index. We'll also use [FT.INFO](https://redis.io/commands/ft.info/) to get information about our index and [FT._LIST](https://redis.io/commands/ft._list/) to get a list of existing indices.
