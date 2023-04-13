@@ -48,5 +48,4 @@ Replace this line with your work:
     results = [{}]
 ```
 
-
-
+If you have any difficulties please see an instructor.
