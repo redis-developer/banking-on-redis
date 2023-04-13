@@ -26,7 +26,7 @@ The main page can be accessed at [localhost:8080](localhost:8080)
 
 You are able to make changes to the code base while the docker instances is running - the server will automatically relaod.
 
-### Running locally with Docker
+### Running locally without Docker
 
 This method will have you downloading and installing a version of Redis on your machine.  You will start up Redis then start the Banking-On-Redis application.
 
