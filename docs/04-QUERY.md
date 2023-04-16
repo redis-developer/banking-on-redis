@@ -7,19 +7,7 @@ In this section, we'll be using [FT.CREATE](https://redis.io/commands/ft.create/
 
 ## Preloaded Data ##
 
-To really show off RediSearch, we need some data. Fortunately, the Docker images you cloned come with data loaded and ready to go. You probably saw it in the previous two exercises. That data is in the `/data` folder of this repository and is named `dump.rdb`. If, for some reason you have changed your data and need to restore it, you can always stop Docker in your terminal using Ctrl-C and then reset the file witht the following git command:
-
-```bash
-git reset data/dump.rdb
-```
-
-Then, start everything back up with:
-
-```bash
-docker compose up
-```
-
-If you need help with this, just ask. We're here to serve.
+To really show off RediSearch, we need some data. Fortunately, the Docker images you cloned come with data loaded and ready to go. You probably saw it in the previous two exercises. That data is in the `/data` folder of this repository and is named `dump.rdb`.
 
 
 ## Creating Indices ##
@@ -67,6 +55,7 @@ The first is the location of the field. This is the [JSONPath](https://redis.io/
 Next, is an optional alias to use when we search with the index later. With Hashes, this is only mildly useful. But with JSON documents, this allows us to rename something like `$.foo.bar[*].baz` to `baz`.
 
 Third and lastly, we tell Redis the type of data that is stored at that location. Valid types are TEXT, TAG, NUMERIC, and GEO. We'll cover these more later when we search on them.
+
 
 ## Removing Indices ##
 
@@ -444,6 +433,7 @@ But you must specifiy at least two characters or you won't get any results at al
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index "@fromAccount:{0*}" RETURN 0
 1) (integer) 0
 ```
+
 
 ## Searching NUMERIC Fields ##
 
