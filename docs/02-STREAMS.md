@@ -353,4 +353,4 @@ And confim that our Stream is now even shorter:
 (integer) 26
 ```
 
-And that's Streams. We now return you to your regularly schedule instruction.
+And that's Streams. We now return you to your regularly scheduled instruction.

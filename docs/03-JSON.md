@@ -8,7 +8,7 @@ Let's try it out from RedisInsight first. Then we can take a look at changing ou
 
 ## Getting and Setting JSON ##
 
-Let's store a simple user in RedisJSON using the [JSON.SET](https://redis.io/commands/json.set/) command:
+Let's store a simple transaction in RedisJSON using the [JSON.SET](https://redis.io/commands/json.set/) command:
 
 ```bash
 127.0.0.1:6379> JSON.SET exercise:transaction:5558675309:123456 $ '{ "payee": "Justin Castilla", "amount": 123.45, "cleared": false }'
