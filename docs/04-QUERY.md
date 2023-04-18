@@ -1,6 +1,6 @@
 # Using RediSearch #
 
-[RediSearch](https://redis.io/docs/stack/search/) is a module that adds indexing and full-text search to Redis. You can use it to make your Hashes and JSON documents fully searchable. RediSearch is a *really* big topic and would probably be suitable as a workshop all its own. We're just going to cover the basics here. You can check out the [full search query syntax](https://redis.io/docs/stack/search/reference/query_syntax/) and learn more of what you can do.
+[RediSearch](https://redis.io/docs/stack/search/) is a module that adds indexing and full-text search to Redis. You can use it to make your Hashes and JSON documents fully searchable. RediSearch is a *really* big topic and would probably be suitable as a workshop all its own. We're just going to cover the basics here. You can check out the [full search query syntax](https://redis.io/docs/stack/search/reference/query_syntax/) and learn more about what you can do.
 
 In this section, we'll be using [FT.CREATE](https://redis.io/commands/ft.create/) to create an index, [FT.SEARCH](https://redis.io/commands/ft.search/) to search, and [FT.DROPINDEX](https://redis.io/commands/ft.dropindex/) to delete an index. We'll also use [FT.INFO](https://redis.io/commands/ft.info/) to get information about our index and [FT._LIST](https://redis.io/commands/ft._list/) to get a list of existing indices.
 
@@ -40,9 +40,9 @@ This creates an index named `exercise:transaction:index`. If you look for this i
 
 Yep. There it is.
 
-Immediately after we specify the name of the index, we can provide the data structure that RediSearch can index. RediSearch can index both JSON documents and Hashes, specified by adding either `ON JSON` or `ON HASH`. If this is not specified, it defaults to `ON HASH`.
+Immediately after we specify the name of the index, we can provide the data structure that RediSearch should index. RediSearch can index both JSON documents and Hashes, specified by adding either `ON JSON` or `ON HASH`. If this is not specified, it defaults to `ON HASH`.
 
-After specifying the data structure, we can provide one or more keyspaces for this index to, well, index. Whenever a change in made in this keyspace, our index is updated automatically with the change. We have specified `PREFIX 1 exercise:transaction:` so we'll look at any JSON document that starts with `exercise:transaction:`. The `1` tells Redis that we only have one prefix. If we had more, it might look like this:
+After specifying the data structure, we can provide one or more keyspaces for this index to, well, index. Whenever a change is made in this keyspace, our index is updated automatically with the change. We have specified `PREFIX 1 exercise:transaction:` so we'll look at any JSON document that starts with `exercise:transaction:`. The `1` tells Redis that we only have one prefix. If we had more, it might look like this:
 
 ```
 PREFIX 3 exercise:transaction: another:exercise:transaction: real:transaction:
@@ -59,7 +59,7 @@ Third and lastly, we tell Redis the type of data that is stored at that location
 
 ## Removing Indices ##
 
-If for some reason we don't like our index, we can always remove it using FT.DROPINDEX. Go ahead an remove the index:
+If for some reason we don't like our index, we can always remove it using FT.DROPINDEX. Go ahead and remove the index:
 
 ```bash
 127.0.0.1:6379> FT.DROPINDEX exercise:transaction:index
@@ -129,7 +129,7 @@ We search our index using the FT.SEARCH command. The simplest of searches is a s
     2) "{\"id\":\"265457\",\"date\":1679227762.641,\"fromAccount\":\"5092096745\",\"toAccount\":\"4536406317\",\"amount\":161.35,\"description\":\"Investment account management fee\",\"location\":\"151.813,58.315\"}"
 ```
 
-Redis returns a lot of data back. The very first thing is the total number of items that matched our query: 98 in our case. After that, you get the keyname followed by the contents of that key. The contents for a Hash would be a series of field names followed by values. But for JSON, the "field name" is just `$` and then "value" is the JSON text.
+RediSearch returns a lot of data. The very first thing is the total number of items that matched our query: 98 in our case. After that, you get the key name followed by the contents of that key. The contents for a Hash would be a series of field names followed by values. But for JSON, the "field name" is just `$` and then "value" is the JSON text.
 
 You might have noticed that we only got 10 results back but we have 98 total results. The call to FT.SEARCH has a default limit of `10`. You can override this and paginate the results using the `LIMIT` option. Try just getting five results:
 
@@ -163,14 +163,14 @@ The `LIMIT` option takes a starting point within the results and a total number 
    2) "{\"id\":\"386261\",\"date\":1679826029.547,\"fromAccount\":\"9055818725\",\"toAccount\":\"7423560078\",\"amount\":438.86,\"description\":\"Online movie rental\",\"location\":\"-153.249,-27.738\"}"
 ```
 
-If you tell limit to return zero items, you will get only the count of items that match your query:
+If you tell LIMIT to return zero items, you will get only the count of items that match your query:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index * LIMIT 0 0
 1) (integer) 98
 ```
 
-You can also specify what fields you want returned with the `RETURN` option. This can use either the aliased we defined in `FT.CREATE`, JSONPath queries, or both:
+You can also specify what fields you want to be returned with the `RETURN` option. This can use either the aliased we defined in `FT.CREATE`, JSONPath queries, or both:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index * RETURN 2 id $.amount
@@ -270,7 +270,7 @@ By default, RediSearch will search all text fields in the index. Let's find some
 
 Looks like we got a few. So many bills to pay.
 
-To search a specific field, prefix it with the field name. Let's look for transactions the word `payment` in the `description` field:
+To search with a specific field, prefix it with the field name. Let's look for transactions with the word `payment` in the `description` field:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index @description:payment RETURN 0
@@ -323,7 +323,7 @@ Twelve again. Looks like every bill was a payment. That means that if we do an `
 11) "exercise:transaction:452020"
 ```
 
-Yep. There's all our payments.
+Yep. There're all our payments.
 
 
 ## Searching TAG Fields ##
@@ -360,7 +360,7 @@ You could create a TAG field with a JSONPath of `$.acounts[*].type`.
 
 You can think of TAGs as the tags clouds on a blog. You can search for JSON documents and Hashes that contain a specific value within that TAG. So, you could search for `Checking` and any document tagged with `Checking` will be returned.
 
-If you provide only a single values in a TAG, it can make an excellent key—foreign or primary. In the above JSON, you can specify a TAG field for the `customerId` property with a JSONPath of `$.customerId`. As all of the TAGs in our example are randomly generated, this is the primary use we'll be using in our examples.
+If you provide only a single value in a TAG, it can make an excellent key—foreign or primary. In the above JSON, you can specify a TAG field for the `customerId` property with a JSONPath of `$.customerId`. As all of the TAGs in our example are randomly generated, this is the primary scenario we'll be using in our examples.
 
 You can search on a TAG field using the following syntax:
 
@@ -423,7 +423,7 @@ Or that contains one:
 11) "exercise:transaction:388401"
 ```
 
-But you must specifiy at least two characters or you won't get any results at all:
+But you must specify at least two characters or you won't get any results at all:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index "@fromAccount:{*0*}" RETURN 0
@@ -437,7 +437,7 @@ But you must specifiy at least two characters or you won't get any results at al
 
 ## Searching NUMERIC Fields ##
 
-NUMERIC fields, unsurprisingly, contain numbers. This can be integers or floating-point numbers. If we have indexed JSON documents, these can be actual numbers in the JSON. If we are working with Hashes, these are Strings that contain numbers. Remember, in Redis that Strings that contain numbers are stored as numbers internally. So, NUMERIC fields are actual numbers.
+NUMERIC fields, unsurprisingly, contain numbers. These can be integers or floating-point numbers. If we have indexed JSON documents, these can be actual numbers in the JSON. If we are working with Hashes, these are Strings that contain numbers. Remember, in Redis, that Strings that contain numbers are stored as numbers internally. So, NUMERIC fields are actual numbers.
 
 Searching NUMERIC fields in RediSearch is pretty easy. Just provide the upper and lower bounds for the number range you want for a particular field. For example, to find all transactions between $50.00 and $75.00 inclusive, we would issue the following query:
 
@@ -535,7 +535,7 @@ You can see here that there are 98 transactions with an amount, which is all of 
 
 ## Searching GEO Fields ##
 
-GEO fields contain a longitude and a latitude. But, in order for RediSearch to properly index them, they must be in a very specific format. That format is `<longitude>,<latitude>`. Many people, people like me, tend to think latitude and then longitude. Redis doesn't. Take a look at some of the GEO fields with a quick search to see how this formatting looks:
+GEO fields contain a longitude and a latitude. But, for RediSearch to properly index them, they must be in a very specific format. That format is `<longitude>,<latitude>`. Many people, people like me, tend to think latitude and then longitude. Redis doesn't. Take a look at some of the GEO fields with a quick search to see how this formatting looks:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index * RETURN 1 location LIMIT 0 5
@@ -559,7 +559,7 @@ GEO fields contain a longitude and a latitude. But, in order for RediSearch to p
 
 It's worth noting that beyond a certain degree of precision, RediSearch will no longer parse a coordinate. So, don't try to cram 14 decimals worth of precision into your coordinates. Anything more than 6 decimals (~10cm) is [probably pointless](https://en.wikipedia.org/wiki/Decimal_degrees) for your application.
 
-To search a GEO field, we need to specify a longitude, a latitude, a radius, and a unit of measure for the radius. This finds all the transactions within 1,000 miles of Cincinati:
+To search a GEO field, we need to specify a longitude, a latitude, a radius, and a unit of measure for the radius. This finds all the transactions within 1,000 miles of Cincinnati:
 
 ```bash
 127.0.0.1:6379> FT.SEARCH exercise:transaction:index "@location:[-84.5125 39.1 1000 mi]" RETURN 1 location

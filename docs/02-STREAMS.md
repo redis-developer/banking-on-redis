@@ -20,12 +20,12 @@ We add to a Stream using the [XADD](https://redis.io/commands/xadd/) command. Go
 
 XADD returns the ID of the event that was just added. Yours will be different from mine as I added them well before this event.
 
-Not much to see here, really. Let's read what we have wrought.
+Not much to see here, really. But let's read what we have wrought.
 
 
 ## Reading Events ##
 
-You read events from a Stream with the [XREAD](https://redis.io/commands/xread/) command. XREAD actually does quiet a bit. In it's simplest form, it returns all of the events _after_ a particular key. Let's get everything since the start of the stream:
+You read events from a Stream with the [XREAD](https://redis.io/commands/xread/) command. XREAD actually does quiet a bit. In its simplest form, it returns all of the events _after_ a particular key. Let's get everything since the start of the stream:
 
 ```
 127.0.0.1:6379> XREAD STREAMS exercise:transactions 0-0
@@ -111,7 +111,7 @@ What if we ask for events beyond the end of the Stream? Try it and find out. Rea
 (nil)
 ```
 
-You can also specify how many items you want back using `COUNT`. You'll get at most that many but sometimes less. Let's read the Stream is groups of 10. Start from the begining:
+You can also specify how many items you want back using `COUNT`. You'll get at most that many but sometimes less. Let's read the Stream in groups of 10. Start from the beginning:
 
 ```bash
 127.0.0.1:6379> XREAD COUNT 10 STREAMS exercise:transactions 0-0
@@ -178,14 +178,14 @@ Then pass in the ID from the last one you received and do it again:
 ...snip...
 ```
 
-Repeat until you're read the entire stream.
+Repeat until you've read the entire stream.
 
 
 ## Waiting for Events ##
 
 One of the nice things about Streams is that they can make nifty queues. Redis will allow us to read from a Stream and will BLOCK until something new arrives. If there's something there, it returns immediately. If not, it waits a bit to find out.
 
-Note that blocking commands doen't work with the workbench in RedisInsight. So, you'll need to use the link labeled `>_CLI` in the bottom left which gives more of a command-line feel. So, click on that and let's try a blocking command against data that is already there:
+Note that blocking commands don't work with the workbench in RedisInsight. So, you'll need to use the link labeled `>_CLI` in the bottom left which gives more of a command-line feel. So, click on that and let's try a blocking command against data that is already there:
 
 ```bash
 127.0.0.1:6379> XREAD BLOCK 60000 COUNT 1 STREAMS exercise:transactions 0-0
@@ -217,7 +217,7 @@ Here we've waited 60 seconds for something, anything. And we asked for just one 
 (1.05s)
 ```
 
-Here, we waited 1000ms and didn't get anything so Redis returned a `(nil)`. Let's give outselves some more time and try to get a transaction in there. From the CLI inside of RedisInsight, enter a nice, patient command:
+Here, we waited 1000ms and didn't get anything so Redis returned a `(nil)`. Let's give ourselves some more time and try to get a transaction in there. From the CLI inside of RedisInsight, enter a nice, patient command:
 
 ```bash
 127.0.0.1:6379> XREAD BLOCK 300000 COUNT 1 STREAMS exercise:transactions $
@@ -260,7 +260,7 @@ Let's delete the event you just added:
 (integer) 1
 ```
 
-And it's gone. Let' confirm it using the [XRANGE](https://redis.io/commands/xrange/) command. XRANGE works like XREAD except you just give it start and stop event IDs. If we give it a start and stop ID of the same value, it'll just return that event:
+And it's gone. Let's confirm it using the [XRANGE](https://redis.io/commands/xrange/) command. XRANGE works like XREAD except you just give it start and stop event IDs. If we give it a start and stop ID of the same value, it'll just return that event:
 
 ```bash
 127.0.0.1:6379> XRANGE exercise:transactions 1681414734509-0 1681414734509-0
@@ -306,7 +306,7 @@ Now, let's trim stuff from before the middle of the stream:
 (integer) 50
 ```
 
-> I used XRANGE to find the 51st item in the stream and get it's ID so we could remove anything before it. What might that query look like?
+> I used XRANGE to find the 51st item in the stream and get its ID so we could remove anything before it. What might that query look like?
 
 And check the length again:
 ```bash
@@ -346,7 +346,7 @@ Let's trim it with MAXLEN this time. We know we have 52 items. Let's split the d
 (integer) 26
 ```
 
-And confim that our Stream is now even shorter:
+And confirm that our Stream is now even shorter:
 
 ```bash
 127.0.0.1:6379> XLEN exercise:transactions

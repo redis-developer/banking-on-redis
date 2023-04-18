@@ -1,6 +1,6 @@
 # Banking on Redis ##
 
-We've explained a bit on how the application works and we even have a pretty diagram here for you to look at to help you understand it.
+We've explained a bit about how the application works and we even have a pretty diagram here for you to look at to help you understand it.
 
 ![](architecture-diagram.png)
 
@@ -13,7 +13,7 @@ Now, on with the challenges!
 
 ## _Challenge 0_: Create a BankTransaction JSON Document ##
 
-You'll want to store, or _save, the randomized bank transaction `bankTransaction` in the Redis OM `bankTransactionRepository`.
+You'll want to store, or _save_, the randomized bank transaction `bankTransaction` in the Redis OM `bankTransactionRepository`.
 
 In `transactionGenerator.js`, replace this line with your work:
 
@@ -47,7 +47,7 @@ Replace this line with your work:
 
 ## _Challenge 3_: Read from the Stream of Transactions ##
 
-Using Node Redis, you'll want to read the most recent entry in the Redis stream with the key `transactions`. Use the `$` symbol to retrieve the most recent entry within your stream read call. Parse through the results until you have a transaction object literal. You'll want to block for at least 10 seconds in order to capture the most recent entry. This call should be made with the second redis connection `redis2` to prevent locking out any other redis calls.
+Using Node Redis, you'll want to read the most recent entry in the Redis stream with the key `transactions`. Use the `$` symbol to retrieve the most recent entry within your stream read call. Parse through the results until you have a transaction object literal. You'll want to block for at least 10 seconds to capture the most recent entry. This call should be made with the second Redis connection `redis2` to prevent locking out any other Redis calls.
 
 Replace this line with your work:
 
@@ -58,7 +58,7 @@ Replace this line with your work:
 
 ## _Challenge 4_: Add Redis to the `/search` Endpoint ##
 
-You'll want to search the `bankRepo` with a term matching `description`, matching `fromAccountName`, or equal to the `transactionType`. Note that `transactionType` is a different field type than `description` and `fromAccountName`, so it may need to use a different Redis OM search method. This search can chain all three field type methods into one big compounded search.
+You'll want to search the `bankRepo` with a term matching `description`, matching `fromAccountName`, or equal to the `transactionType`. Note that `transactionType` is a different field type than `description` and `fromAccountName`, so it may need to use a different Redis OM search method. This search can chain all three field-type methods into one big compounded search.
 
 You might find the [Redis OM documentation](https://github.com/redis/redis-om-node) helpful here.
 
@@ -68,4 +68,4 @@ Replace this line with your work:
     results = [{}]
 ```
 
-And your all done! Congrats on completing the workshop. Go forth and use more Redis!
+And you're all done! Congrats on completing the workshop. Go forth and use more Redis!
