@@ -10,7 +10,6 @@ services:
 
   app:
       build: ./app
-      command: npm run dev:watch
       volumes:
         - ./app:/usr/src/app
       ports:

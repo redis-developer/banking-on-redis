@@ -2,14 +2,14 @@ FROM node:16
 
 WORKDIR /usr/src/app
 
-COPY package*.json ./
+# COPY package*.json ./
 
-RUN npm install
+# RUN npm install
 
-COPY . .
+# COPY . .
 
 EXPOSE 8080
 
 EXPOSE 80
 
-CMD [ "nodemon", "-L", "server.js" ]
+CMD [ "npm", "run", "dev:watch" ]
