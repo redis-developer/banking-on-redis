@@ -4,17 +4,17 @@ import { bankTransactionRepository as bankRepo  } from '../om/bankTransaction-re
 
 export const transactionRouter = Router()
 
-const FIVE_MINUTES = 1000 * 60 * 5
+const TRANSACTION_RATE_MS = 10000
 const TRANSACTIONS_STREAM = "transactions"
 const BALANCE_TS = 'balance_ts';
 const SORTED_SET_KEY = 'bigspenders';
 let balance = 100000.00;
 
-/* fetch all transactions up to five minutes ago */
+/* fetch all transactions up to an hour ago */
 transactionRouter.get('/balance', async (req, res) => {
   const balance = await redis.ts.range(
     BALANCE_TS,
-    Date.now() - FIVE_MINUTES,
+    Date.now() - (1000 * 60 * 5),
     Date.now())
 
   let balancePayload = balance.map((entry) => {
@@ -50,24 +50,19 @@ transactionRouter.get('/search', async (req, res) => {
   let results
 
   if(term.length>=3){
-    /*
-      REDIS CHALLENGE  4
-      Add Redis to the `/search` endpoint
-    */
-    results = [{}]
+    results = await bankRepo.search()
+      .where('description').matches(term)
+      .or('fromAccountName').matches(term)
+      .or('transactionType').equals(term)
+      .return.all({ pageSize: 1000})
   }
   res.send(results)
 })
 
 /* return ten most recent transactions */
 transactionRouter.get('/transactions', async (req, res) => {
-
-  /*
-    REDIS CHALLENGE 2
-    Add Redis to the `/transactions` endpoint
-  */
-  const transactions = []
-
-  res.send(transactions)
-
+  const transactions = await bankRepo.search()
+    .sortBy('transactionDate', 'DESC')
+    .return.all({ pageSize: 10})
+  res.send(transactions.slice(0, 10))
 })
