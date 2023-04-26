@@ -72,19 +72,3 @@ The biggest spenders endpoint retrieves all members of the sorted set `bigspende
 
 ### Transactions Websocket
 The Websocket connection reads the most recent entry from the `transactions` stream and updates the UI with the resulting update. The websocket event also triggers calls to `/balance` and `/biggestspenders`, which results in a refresh of data for the visualizations.
-
-
-## Prerequisites
-
-- 1
-- 2
-- 3
-- 4
-
-## Running Locally
-
-- 1
-- 2
-- 3
-- 4
-
