@@ -23,7 +23,7 @@ docker-compose up --build
 
 4. Make sure it's all working:
 
-Once everything downloads and starts, you'll have a the following services running:
+Once everything downloads and starts, you'll have the following services running:
 
 - *Redis* is now listening on port `6379`. Your code will talk to Redis on this port. Nothing for you to do here.
 
