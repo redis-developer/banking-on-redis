@@ -1,6 +1,6 @@
 # Banking-On-Redis
 
-Banking-On-Redis is a Node.js port of the Java application [Redisbank](https://github.com/Redislabs-Solution-Architects/**redisbank**). 
+Banking-On-Redis is a Node.js port of the Java application [Redisbank](https://github.com/Redislabs-Solution-Architects/redisbank). 
 
 This repository uses Redis core data structures, Streams, JSON, Search and TimeSeries to build a Node.js Express Redis Reactive application that shows a searchable transaction overview with realtime updates as well as a personal finance management overview with realtime balance and biggest spenders updates. UI in Bootstrap/CSS/Vue.
 
